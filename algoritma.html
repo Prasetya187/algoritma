@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Petualangan Algoritma</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #6dd5ed, #2193b0);
+      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .main-container {
+      background: #f0f2f5;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 1200px;
+      margin-top: 20px;
+    }
+    .header-bar {
+      background-color: #f7cac9;
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .timer-box {
+      background-color: #f44336;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .mission-card, .algorithm-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+    }
+    .mission-card h5, .algorithm-card h5 {
+      color: #3f51b5;
+      margin-bottom: 15px;
+    }
+    .level-navigation button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .level-navigation button:hover {
+      background-color: #0056b3;
+    }
+    .draggable-item {
+      padding: 10px;
+      margin: 8px 0;
+      background: #ffe0b2;
+      border: 1px dashed #ff9800;
+      border-radius: 8px;
+      cursor: grab;
+      font-weight: 500;
+    }
+    .draggable-item.dragging {
+      opacity: 0;
+    }
+    .drop-zone {
+      min-height: 45px;
+      background: #e3f2fd;
+      border: 2px dashed #90caf9;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      padding: 8px;
+      color: #555;
+      display: flex;
+      align-items: center;
+    }
+    .check-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+    }
+    .check-button:hover {
+      background-color: #45a049;
+    }
+    .reset-button {
+      background-color: #f44336;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .reset-button:hover {
+      background-color: #da190b;
+    }
+    .algorithm-title {
+      background-color: #6a1b9a;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .dropdown-menu {
+      min-width: unset;
+    }
+  </style>
+</head>
+<body>
+  <div class="container main-container" data-aos="fade-up">
+    <div class="text-center mb-4">
+      <h1 style="color: #3f51b5;">🚀 Petualangan Algoritma</h1>
+      <h5 class="text-muted">Belajar coding dengan menyusun algoritma yang benar!</h5>
+<p class="text-muted mb-5"><strong>Teacher : Prasetya Catur Nugraha</strong></p>
+    </div>
+
+    <div class="header-bar">
+      <div class="d-flex align-items-center">
+        <span class="timer-box">Timer: <span id="timer">00:00</span></span>
+      </div>
+      <div class="dropdown">
+        <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="timerDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Tanpa Timer
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="timerDropdown">
+          <li><a class="dropdown-item" href="#" data-duration="0">Tanpa Timer</a></li>
+          <li><a class="dropdown-item" href="#" data-duration="5">5 Menit</a></li>
+          <li><a class="dropdown-item" href="#" data-duration="15">15 Menit</a></li>
+          <li><a class="dropdown-item" href="#" data-duration="30">30 Menit</a></li>
+        </ul>
+        <button class="btn btn-sm btn-danger" onclick="resetGame()">Reset</button>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="mission-card">
+          <h5>Misi Saat Ini</h5>
+          <div class="card p-3 mb-3" style="background-color: #e8f5e9; border-left: 5px solid #4CAF50;">
+            <h6>Level 1: Membuat Sandwich 🥪</h6>
+            <p class="mb-0">Susun langkah-langkah untuk membuat sandwich dalam urutan yang benar!</p>
+          </div>
+          <div class="d-flex justify-content-between mb-3 level-navigation">
+            <button class="btn btn-primary" onclick="prevLevel()">&larr; Level Sebelumnya</button>
+            <span>Level <span id="currentLevel">1</span> dari 20</span>
+            <button class="btn btn-primary" onclick="nextLevel()">Level Selanjutnya &rarr;</button>
+          </div>
+          <h6>Seret langkah-langkah ini:</h6>
+          <div id="items">
+            </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="algorithm-card">
+          <div class="algorithm-title">
+            <h6>Susun Algoritma</h6>
+          </div>
+          <div class="drop-zone" data-step="1">Langkah 1: Seret langkah pertama ke sini</div>
+          <div class="drop-zone" data-step="2">Langkah 2: Seret langkah kedua ke sini</div>
+          <div class="drop-zone" data-step="3">Langkah 3: Seret langkah ketiga ke sini</div>
+          <div class="drop-zone" data-step="4">Langkah 4: Seret langkah keempat ke sini</div>
+          <div class="d-flex justify-content-center mt-4">
+            <button class="check-button" onclick="checkAnswer()">✅ Periksa Jawaban</button>
+            <button class="reset-button" onclick="resetDropZones()">🔄 Reset</button>
+          </div>
+          <div id="feedback" class="mt-3 fw-bold text-center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="correctAnswerModal" tabindex="-1" aria-labelledby="correctAnswerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="correctAnswerModalLabel">🎉 Jawaban Benar!</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p class="fs-4">Kerja bagus! Kamu berhasil menyelesaikan level ini.</p>
+          <p>Siap untuk level selanjutnya?</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-primary" id="nextLevelModalBtn">Lanjut Level &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="finalScoreModal" tabindex="-1" aria-labelledby="finalScoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title" id="finalScoreModalLabel">🏆 Petualangan Selesai!</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p id="finalScoreStatus" class="fs-4"></p>
+          <p id="finalScoreText" class="fs-3 fw-bold">Total skormu: 0!</p>
+          <p>Ingin bermain lagi?</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-primary" id="playAgainModalBtn">Main Lagi!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
+  <script>
+    const itemsContainer = document.getElementById('items');
+    const dropZones = document.querySelectorAll('.drop-zone');
+    const feedback = document.getElementById('feedback'); 
+
+    let timerInterval;
+    let timeRemaining;
+    let timerActive = false;
+    const timerDisplay = document.getElementById('timer');
+    const timerDropdownButton = document.getElementById('timerDropdown');
+
+    let currentLevel = 1;
+    const totalLevels = 20;
+    let score = 0;
+    let levelAttempted = false; // Flag untuk melacak apakah level saat ini sudah dicoba
+    let levelStates = {}; // Objek untuk melacak status setiap level
+
+    function initializeLevelStates() {
+        levelStates = {};
+        for (let i = 1; i <= totalLevels; i++) {
+            levelStates[i] = "unvisited"; // Default state for all levels
+        }
+    }
+
+    // Helper untuk mengacak array saat inisialisasi levelData
+    function shuffleArrayForInit(array) {
+        let newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    }
+
+    // Definisi item untuk level Menggambar Rumah (akan diacak di sini)
+    const gambarRumahItems = [
+        { id: "21", text: "gambar tembok" },
+        { id: "22", text: "gambar atap" },
+        { id: "23", text: "gambar jendela dan pintu" },
+        { id: "24", text: "warnai rumah" }
+    ];
+
+    const levelData = {
+      1: {
+        mission: "Membuat Sandwich 🥪",
+        description: "Susun langkah-langkah untuk membuat sandwich dalam urutan yang benar!",
+        items: [
+          { id: "1", text: "Ambil 2 lembar roti tawar" },
+          { id: "2", text: "Letakkan isi (keju, daging, sayur)" },
+          { id: "3", text: "Tutup dengan roti yang satunya" },
+          { id: "4", text: "Potong sandwich menjadi dua bagian" }
+        ],
+        correctOrder: ["1", "2", "3", "4"]
+      },
+      2: {
+        mission: "Menyalakan Komputer 💻",
+        description: "Susun langkah-langkah untuk menyalakan komputer!",
+        items: [
+          { id: "5", text: "Pastikan kabel power terhubung" },
+          { id: "6", text: "Tekan tombol power di CPU" },
+          { id: "7", text: "Tekan tombol power di monitor" },
+          { id: "8", text: "Tunggu sistem operasi memuat" }
+        ],
+        correctOrder: ["5", "6", "7", "8"]
+      },
+      3: {
+        mission: "Menanam Biji 🌱",
+        description: "Susun langkah-langkah untuk menanam biji!",
+        items: [
+          { id: "9", text: "gali tanah" },
+          { id: "10", text: "masukkan biji" },
+          { id: "11", text: "tutup kembali tanah" },
+          { id: "12", text: "siram dengan air" }
+        ],
+        correctOrder: ["9", "10", "11", "12"]
+      },
+      4: {
+        mission: "Menyikat Gigi 🦷",
+        description: "Susun langkah-langkah untuk menyikat gigi!",
+        items: [
+          { id: "13", text: "beri pasta gigi" },
+          { id: "14", text: "ambil sikat gigi" },
+          { id: "15", text: "gosok gigi" },
+          { id: "16", text: "bilas mulut" }
+        ],
+        correctOrder: ["14", "13", "15", "16"]
+      },
+      5: {
+        mission: "Membuat Teh 🍵",
+        description: "Susun langkah-langkah untuk membuat teh!",
+        items: [
+          { id: "17", text: "tuang air panas" },
+          { id: "18", text: "masukkan teh celup" },
+          { id: "19", text: "tunggu beberapa menit" },
+          { id: "20", text: "angkat teh celup" }
+        ],
+        correctOrder: ["17", "18", "19", "20"]
+      },
+      6: {
+        mission: "Menggambar Rumah 🏠",
+        description: "Susun langkah-langkah untuk menggambar rumah!",
+        items: shuffleArrayForInit(gambarRumahItems),
+        correctOrder: ["21", "22", "23", "24"]
+      },
+      7: { // Level 7: Mencuci Tangan
+        mission: "Mencuci Tangan ✋",
+        description: "Susun langkah-langkah untuk mencuci tangan!",
+        items: [
+          { id: "25", text: "basahi tangan" },
+          { id: "26", text: "beri sabun" },
+          { id: "27", text: "gosok tangan" },
+          { id: "28", text: "bilas hingga bersih" }
+        ],
+        correctOrder: ["25", "26", "27", "28"]
+      },
+      8: { // Level 8: Memasak Nasi
+        mission: "Memasak Nasi 🍚",
+        description: "Susun langkah-langkah untuk memasak nasi!",
+        items: [
+          { id: "29", text: "cuci beras" },
+          { id: "30", text: "masukkan air" },
+          { id: "31", text: "tekan tombol rice cooker" },
+          { id: "32", text: "tunggu hingga matang" }
+        ],
+        correctOrder: ["29", "30", "31", "32"]
+      },
+      9: { // Level 9: Memakai Sepatu
+        mission: "Memakai Sepatu 👟",
+        description: "Susun langkah-langkah untuk memakai sepatu!",
+        items: [
+          { id: "33", text: "pakai kaus kaki" },
+          { id: "34", text: "ambil sepatu" },
+          { id: "35", text: "pakai sepatu" },
+          { id: "36", text: "ikat tali sepatu" }
+        ],
+        correctOrder: ["33", "34", "35", "36"]
+      },
+      10: { // Level 10: Membuat Jus
+        mission: "Membuat Jus 🍓",
+        description: "Susun langkah-langkah untuk membuat jus!",
+        items: [
+          { id: "37", text: "potong buah" },
+          { id: "38", text: "masukkan ke blender" },
+          { id: "39", text: "tambahkan air dan gula" },
+          { id: "40", text: "tekan tombol blender" }
+        ],
+        correctOrder: ["37", "38", "39", "40"]
+      },
+      11: { // Level 11: Menyalakan Komputer (beda dengan level 2)
+        mission: "Menyalakan Komputer 💻",
+        description: "Susun langkah-langkah untuk menyalakan komputer!",
+        items: [
+          { id: "41", text: "tekan tombol power" },
+          { id: "42", text: "tunggu sampai menyala" },
+          { id: "43", text: "masukkan password" },
+          { id: "44", text: "klik desktop" }
+        ],
+        correctOrder: ["41", "42", "43", "44"]
+      },
+      12: { // Level 12: Pergi ke Sekolah
+        mission: "Pergi ke Sekolah 🎒",
+        description: "Susun langkah-langkah untuk pergi ke sekolah!",
+        items: [
+          { id: "45", text: "bangun tidur" },
+          { id: "46", text: "mandi dan ganti baju" },
+          { id: "47", text: "sarapan pagi" },
+          { id: "48", text: "berangkat ke sekolah" }
+        ],
+        correctOrder: ["45", "46", "47", "48"]
+      },
+      13: { // Level 13: Mengirim Surat
+        mission: "Mengirim Surat ✉️",
+        description: "Susun langkah-langkah untuk mengirim surat!",
+        items: [
+          { id: "49", text: "tulis surat" },
+          { id: "50", text: "masukkan ke amplop" },
+          { id: "51", text: "tempel perangko" },
+          { id: "52", text: "kirim ke kantor pos" }
+        ],
+        correctOrder: ["49", "50", "51", "52"]
+      },
+      14: { // Level 14: Menghidupkan TV
+        mission: "Menghidupkan TV 📺",
+        description: "Susun langkah-langkah untuk menghidupkan TV!",
+        items: [
+          { id: "53", text: "ambil remote" },
+          { id: "54", text: "tekan tombol power" },
+          { id: "55", text: "tunggu layar menyala" },
+          { id: "56", text: "pilih saluran" }
+        ],
+        correctOrder: ["53", "54", "55", "56"]
+      },
+      15: { // Level 15: Memakai Masker
+        mission: "Memakai Masker 😷",
+        description: "Susun langkah-langkah untuk memakai masker!",
+        items: [
+          { id: "57", text: "ambil masker" },
+          { id: "58", text: "buka masker" },
+          { id: "59", text: "pasang ke wajah" },
+          { id: "60", text: "kaitkan ke telinga" }
+        ],
+        correctOrder: ["57", "58", "59", "60"]
+      },
+      16: { // Level 16: Membuat Origami Burung
+        mission: "Membuat Origami Burung 🐦",
+        description: "Susun langkah-langkah untuk membuat origami burung!",
+        items: [
+          { id: "61", text: "lipat segitiga" },
+          { id: "62", text: "buat sayap" },
+          { id: "63", text: "bentuk kepala" },
+          { id: "64", text: "beri mata" }
+        ],
+        correctOrder: ["61", "62", "63", "64"]
+      },
+      17: { // Level 17: Menggambar Bunga
+        mission: "Menggambar Bunga 🌸",
+        description: "Susun langkah-langkah untuk menggambar bunga!",
+        items: [
+          { id: "65", text: "gambar tangkai" },
+          { id: "66", text: "gambar kelopak" },
+          { id: "67", text: "gambar daun" },
+          { id: "68", text: "warnai" }
+        ],
+        correctOrder: ["65", "66", "67", "68"]
+      },
+      18: { // Level 18: Membuat Layangan
+        mission: "Membuat Layangan 🎏",
+        description: "Susun langkah-langkah untuk membuat layangan!",
+        items: [
+          { id: "69", text: "siapkan bambu dan kertas" },
+          { id: "70", text: "bentuk rangka" },
+          { id: "71", text: "tempelkan kertas" },
+          { id: "72", text: "pasang tali" }
+        ],
+        correctOrder: ["69", "70", "71", "72"]
+      },
+      19: { // Level 19: Menyapu Halaman
+        mission: "Menyapu Halaman 🍂",
+        description: "Susun langkah-langkah untuk menyapu halaman!",
+        items: [
+          { id: "73", text: "ambil sapu" },
+          { id: "74", text: "sapu daun" },
+          { id: "75", text: "kumpulkan ke satu tempat" },
+          { id: "76", text: "buang ke tempat sampah" }
+        ],
+        correctOrder: ["73", "74", "75", "76"]
+      },
+      20: { // Level 20: Mandi Pagi
+        mission: "Mandi Pagi 🚿",
+        description: "Susun langkah-langkah untuk mandi pagi!",
+        items: [
+          { id: "77", text: "buka keran" },
+          { id: "78", text: "basahi tubuh" },
+          { id: "79", text: "pakai sabun dan gosok" },
+          { id: "80", text: "bilas sampai bersih" }
+        ],
+        correctOrder: ["77", "78", "79", "80"]
+      }
+    };
+
+    let correctAnswerModalInstance;
+    let finalScoreModalInstance;
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    
+
+    function disableNavigation() {
+      document.querySelectorAll('.level-navigation button').forEach(btn => {
+        btn.disabled = true;
+      });
+    }
+
+    function enableNavigation() {
+      document.querySelectorAll('.level-navigation button').forEach(btn => {
+        btn.disabled = false;
+      });
+    }
+
+    function startTimer(durationMinutes) {
+      if (timerInterval) clearInterval(timerInterval);
+      if (durationMinutes === 0) {
+        timerActive = false;
+        timerDisplay.textContent = '00:00';
+        timerDropdownButton.textContent = 'Tanpa Timer';
+        return;
+      }
+
+      
+      timeRemaining = durationMinutes * 60;
+      timerActive = true;
+      timerDropdownButton.textContent = `${durationMinutes} Menit`;
+
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        timerDisplay.textContent = formatTime(timeRemaining);
+
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          timerActive = false;
+          timerDisplay.textContent = 'Waktu Habis!';
+
+          disableNavigation();
+
+          document.getElementById('finalScoreStatus').textContent = 'Waktu Anda habis!';
+          document.getElementById('finalScoreText').textContent = `Total skormu: ${score} poin!`;
+
+          if (!finalScoreModalInstance) {
+            finalScoreModalInstance = new bootstrap.Modal(document.getElementById('finalScoreModal'));
+          }
+          finalScoreModalInstance.show();
+          const playAgainModalBtn = document.getElementById('playAgainModalBtn');
+          playAgainModalBtn.removeEventListener('click', handlePlayAgainModalClick);
+          playAgainModalBtn.addEventListener('click', handlePlayAgainModalClick);
+        }
+      }, 1000);
+    }
+
+    function handlePlayAgainModalClick() {
+      if (finalScoreModalInstance) {
+        finalScoreModalInstance.hide();
+      }
+      currentLevel = 1;
+      score = 0;
+      enableNavigation();
+      resetGame();
+    }
+
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const duration = parseInt(this.dataset.duration);
+        startTimer(duration);
+      });
+    });
+
+    function addDragListeners() {
+      const currentItems = document.querySelectorAll('.draggable-item');
+      currentItems.forEach(item => {
+        item.removeEventListener('dragstart', handleDragStart);
+        item.removeEventListener('dragend', handleDragEnd);
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragend', handleDragEnd);
+      });
+    }
+
+    function handleDragStart(e) {
+      e.dataTransfer.setData('text/plain', this.dataset.id);
+      setTimeout(() => this.classList.add('dragging'), 0);
+    }
+
+    function handleDragEnd() {
+      this.classList.remove('dragging');
+    }
+
+    dropZones.forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.style.backgroundColor = '#b2bec3';
+      });
+
+      zone.addEventListener('dragleave', () => {
+        zone.style.backgroundColor = '#e3f2fd';
+      });
+
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.style.backgroundColor = '#e3f2fd';
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`[data-id='${id}']`);
+
+        if (!item) return;
+
+        const existingItemInTargetZone = zone.querySelector('.draggable-item');
+        if (existingItemInTargetZone && existingItemInTargetZone !== item) {
+            itemsContainer.appendChild(existingItemInTargetZone);
+            existingItemInTargetZone.style.display = 'block';
+            existingItemInTargetZone.classList.remove('dragging');
+        }
+
+        if (item.parentNode === zone) {
+            return;
+        }
+
+        zone.innerHTML = '';
+        zone.appendChild(item);
+        item.classList.remove('dragging');
+        item.style.display = 'block';
+      });
+    });
+
+    // Fungsi untuk mengacak array (Fisher-Yates algorithm) - digunakan oleh loadLevel
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function loadLevel(level) {
+      if (level < 1 || level > totalLevels || !levelData[level]) {
+        console.warn("Level tidak ditemukan:", level);
+        currentLevel = 1;
+        loadLevel(currentLevel);
+        return;
+      }
+      currentLevel = level;
+      document.getElementById('currentLevel').textContent = currentLevel;
+
+      const data = levelData[currentLevel];
+      document.querySelector('.mission-card h6').textContent = `Level ${currentLevel}: ${data.mission}`;
+      document.querySelector('.mission-card p').textContent = data.description;
+
+      itemsContainer.innerHTML = '';
+      
+      const itemsToDisplay = [...data.items];
+      shuffleArray(itemsToDisplay);
+
+      itemsToDisplay.forEach(itemData => {
+        const item = document.createElement('div');
+        item.classList.add('draggable-item');
+        item.setAttribute('draggable', 'true');
+        item.dataset.id = itemData.id;
+        item.textContent = itemData.text;
+        itemsContainer.appendChild(item);
+      });
+
+      resetDropZones();
+      addDragListeners();
+      feedback.innerHTML = ''; 
+      levelAttempted = false; // Reset flag untuk level baru setiap kali level dimuat
+    }
+
+    function nextLevel() {
+      if (currentLevel < totalLevels) {
+        // Jika level saat ini belum dicoba DAN statusnya masih 'unvisited' (baru dilewati pertama kali)
+        if (!levelAttempted && levelStates[currentLevel] === "unvisited") {
+            feedback.innerHTML = 'Anda melewati level ini.'; // Pesan tanpa pengurangan skor
+            feedback.style.color = 'orange'; 
+            levelStates[currentLevel] = "skipped"; // Tandai level ini sebagai 'dilewati'
+            setTimeout(() => { 
+                currentLevel++;
+                loadLevel(currentLevel);
+            }, 1500);
+        } else { // Jika level sudah dicoba, atau sudah dilewati/dijawab sebelumnya (tidak perlu mengurangi skor lagi)
+            currentLevel++;
+            loadLevel(currentLevel);
+        }
+      } else {
+        // Logika untuk level terakhir ditangani oleh checkAnswer
+      }
+    }
+
+    function prevLevel() {
+      if (currentLevel > 1) {
+        currentLevel--;
+        loadLevel(currentLevel); 
+      } else {
+        alert("Anda sudah di level pertama!");
+      }
+    }
+
+    function resetGame() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerActive = false;
+      timerDisplay.textContent = '00:00';
+      timerDropdownButton.textContent = 'Tanpa Timer';
+
+      score = 0; // Reset skor
+      currentLevel = 1; // Reset ke level pertama
+      initializeLevelStates(); // Inisialisasi ulang status semua level
+      loadLevel(currentLevel); // Load level pertama
+    }
+
+    function resetDropZones() {
+      dropZones.forEach(zone => {
+        const itemInZone = zone.querySelector('.draggable-item');
+        if (itemInZone) {
+          itemsContainer.appendChild(itemInZone);
+          itemInZone.style.display = 'block';
+          itemInZone.classList.remove('dragging');
+        }
+        zone.innerHTML = `Langkah ${zone.dataset.step}: Seret langkah ${zone.dataset.step === '1' ? 'pertama' : zone.dataset.step === '2' ? 'kedua' : zone.dataset.step === '3' ? 'ketiga' : 'keempat'} ke sini`;
+        zone.style.backgroundColor = '#e3f2fd';
+      });
+      itemsContainer.querySelectorAll('.draggable-item').forEach(item => {
+        item.style.display = 'block';
+        item.classList.remove('dragging');
+      });
+      addDragListeners();
+    }
+
+    function checkAnswer() {
+      levelAttempted = true; // Tandai bahwa level saat ini telah dicoba
+
+      const correctOrder = levelData[currentLevel].correctOrder;
+      let userOrder = [];
+      dropZones.forEach(zone => {
+        const item = zone.querySelector('.draggable-item');
+        if (item) userOrder.push(item.dataset.id);
+        else userOrder.push(null);
+      });
+
+      if (userOrder.includes(null)) {
+        feedback.innerHTML = '❌ Harap isi semua langkah!';
+        feedback.style.color = 'orange';
+        return;
+      }
+
+      const correct = JSON.stringify(correctOrder) === JSON.stringify(userOrder);
+
+      // Inisialisasi instance modal jika belum ada
+      if (!correctAnswerModalInstance) {
+          correctAnswerModalInstance = new bootstrap.Modal(document.getElementById('correctAnswerModal'));
+      }
+      if (!finalScoreModalInstance) {
+          finalScoreModalInstance = new bootstrap.Modal(document.getElementById('finalScoreModal'));
+      }
+
+      if (correct) {
+        feedback.innerHTML = '🎉 Jawaban benar! Kamu hebat!';
+        feedback.style.color = 'green';
+
+        // Tambah skor hanya jika level ini belum pernah dijawab benar sebelumnya
+        if (levelStates[currentLevel] !== "answered_correctly") {
+            score += 5; 
+        }
+        levelStates[currentLevel] = "answered_correctly"; // Update status level
+
+        setTimeout(() => {
+            if (currentLevel < totalLevels) {
+                correctAnswerModalInstance.show();
+                const nextLevelModalBtn = document.getElementById('nextLevelModalBtn');
+                nextLevelModalBtn.removeEventListener('click', handleNextLevelModalClick);
+                nextLevelModalBtn.addEventListener('click', handleNextLevelModalClick);
+            } else { // Semua level selesai dengan jawaban benar
+                if (timerActive) {
+                    clearInterval(timerInterval);
+                    timerActive = false;
+                }
+                document.getElementById('finalScoreStatus').textContent = 'Selamat! Kamu telah menyelesaikan semua level.';
+                document.getElementById('finalScoreText').textContent = `Total skormu: ${score} poin!`;
+                finalScoreModalInstance.show();
+                const playAgainModalBtn = document.getElementById('playAgainModalBtn');
+                playAgainModalBtn.removeEventListener('click', handlePlayAgainModalClick);
+                playAgainModalBtn.addEventListener('click', handlePlayAgainModalClick);
+            }
+        }, 1500);
+
+      } else { // Jawaban salah
+        feedback.innerHTML = '❌ Jawaban salah! Melanjutkan ke soal berikutnya.';
+        feedback.style.color = 'red';
+
+        // Tidak ada pengurangan skor untuk jawaban salah
+        levelStates[currentLevel] = "answered_incorrectly"; // Update status level
+
+        setTimeout(() => {
+            if (currentLevel === totalLevels) { // Jika ini level terakhir dan jawabannya salah
+                if (timerActive) {
+                    clearInterval(timerInterval);
+                    timerActive = false;
+                }
+                document.getElementById('finalScoreStatus').textContent = 'Permainan selesai. Kamu tidak berhasil menjawab level terakhir.'; // Pesan yang berbeda
+                document.getElementById('finalScoreText').textContent = `Total skormu: ${score} poin!`;
+                finalScoreModalInstance.show();
+                const playAgainModalBtn = document.getElementById('playAgainModalBtn');
+                playAgainModalBtn.removeEventListener('click', handlePlayAgainModalClick);
+                playAgainModalBtn.addEventListener('click', handlePlayAgainModalClick);
+            } else {
+                nextLevel(); // Lanjut ke level berikutnya jika bukan level terakhir
+            }
+        }, 1500);
+      }
+    }
+
+    function handleNextLevelModalClick() {
+        if (correctAnswerModalInstance) {
+            correctAnswerModalInstance.hide();
+        }
+        nextLevel();
+    }
+
+    function handlePlayAgainModalClick() {
+        if (finalScoreModalInstance) {
+            finalScoreModalInstance.hide();
+        }
+        currentLevel = 1;
+        score = 0;
+        resetGame(); // Panggil resetGame untuk mengatur ulang semua status
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeLevelStates(); // Inisialisasi status level saat dokumen dimuat
+        loadLevel(currentLevel);
+    });
+  </script>
+
+  <footer class="bg-transparent text-center py-7 mt-5">
+  <div class="bg-dark text-white rounded-pill px-4 py-3 d-inline-block shadow-sm">
+    &copy; 2025 Petualangan Algoritma —
+    <a href="https://prasetyacaturnugraha.web.id" class="text-warning text-decoration-none" target="_blank">
+      prasetyacaturnugraha.web.id
+    </a>
+  </div>
+</footer>
+
+
+</body>
+</html>
